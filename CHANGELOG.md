@@ -1,4 +1,7 @@
 
+## [1.1.2]
+- updated to dio 4.0.0-beta
+
 ## [1.1.1]
 - remove flutter as dependency
 
