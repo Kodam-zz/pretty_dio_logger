@@ -52,8 +52,9 @@ class PrettyDioLogger extends Interceptor {
       this.compact = true,
       this.logPrint = print});
 
+
   @override
-  Future onRequest(RequestOptions options) async {
+  Future onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
     if (request) {
       _printRequestHeader(options);
     }
@@ -85,14 +86,14 @@ class PrettyDioLogger extends Interceptor {
       }
     }
 
-    return options;
+    return handler.next(options);
   }
 
   @override
-  Future onError(DioError err) async {
+  Future onError(DioError err, ErrorInterceptorHandler handler) async {
     if (error) {
       if (err.type == DioErrorType.response) {
-        final uri = err.response.request.uri;
+        final uri = err.response?.requestOptions?.uri;
         _printBoxed(
             header:
                 'DioError ║ Status: ${err.response.statusCode} ${err.response.statusMessage}',
@@ -106,11 +107,11 @@ class PrettyDioLogger extends Interceptor {
       } else
         _printBoxed(header: 'DioError ║ ${err.type}', text: err.message);
     }
-    return err;
+    return handler.next(err);
   }
 
   @override
-  Future onResponse(Response response) async {
+  Future onResponse(Response response, ResponseInterceptorHandler handler) async {
     _printResponseHeader(response);
     if (responseHeader) {
       final responseHeaders = Map<String, String>();
@@ -127,7 +128,7 @@ class PrettyDioLogger extends Interceptor {
       _printLine('╚');
     }
 
-    return response;
+    return handler.next(response);
   }
 
   void _printBoxed({String header, String text}) {
@@ -151,8 +152,8 @@ class PrettyDioLogger extends Interceptor {
   }
 
   void _printResponseHeader(Response response) {
-    final uri = response?.request?.uri;
-    final method = response.request.method;
+    final uri = response?.requestOptions?.uri;
+    final method = response?.requestOptions?.method;
     _printBoxed(
         header:
             'Response ║ $method ║ Status: ${response.statusCode} ${response.statusMessage}',
