@@ -9,10 +9,10 @@ class PrettyDioLogger extends Interceptor {
   /// Print request [Options]
   final bool request;
 
-  /// Print request header [Options.headers]
+  /// Print request header [options?.headers]
   final bool requestHeader;
 
-  /// Print request data [Options.data]
+  /// Print request data [options?.data]
   final bool requestBody;
 
   /// Print [Response.data]
@@ -59,23 +59,23 @@ class PrettyDioLogger extends Interceptor {
       _printRequestHeader(options);
     }
     if (requestHeader) {
-      _printMapAsTable(options.queryParameters, header: 'Query Parameters');
+      _printMapAsTable(options?.queryParameters, header: 'Query Parameters');
       final requestHeaders = Map();
-      if (options.headers != null) {
-        requestHeaders.addAll(options.headers);
+      if (options?.headers != null) {
+        requestHeaders.addAll(options?.headers);
       }
-      requestHeaders['contentType'] = options.contentType?.toString();
-      requestHeaders['responseType'] = options.responseType?.toString();
-      requestHeaders['followRedirects'] = options.followRedirects;
-      requestHeaders['connectTimeout'] = options.connectTimeout;
-      requestHeaders['receiveTimeout'] = options.receiveTimeout;
+      requestHeaders['contentType'] = options?.contentType?.toString();
+      requestHeaders['responseType'] = options?.responseType?.toString();
+      requestHeaders['followRedirects'] = options?.followRedirects;
+      requestHeaders['connectTimeout'] = options?.connectTimeout;
+      requestHeaders['receiveTimeout'] = options?.receiveTimeout;
       _printMapAsTable(requestHeaders, header: 'Headers');
-      _printMapAsTable(options.extra, header: 'Extras');
+      _printMapAsTable(options?.extra, header: 'Extras');
     }
-    if (requestBody && options.method != 'GET') {
-      final data = options.data;
+    if (requestBody && options?.method != 'GET') {
+      final data = options?.data;
       if (data != null) {
-        if (data is Map) _printMapAsTable(options.data, header: 'Body');
+        if (data is Map) _printMapAsTable(options?.data, header: 'Body');
         if (data is FormData) {
           final formDataMap = Map()
             ..addEntries(data.fields)
